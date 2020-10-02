@@ -1,19 +1,22 @@
 <template>
-  <div id="app" class="fixed w-full h-screen flex font-sans text-center text-gray-800">
-    <Sidebar msg="Hi Vihan!" />
-    <Chat />
+  <div
+    id="app"
+    class="fixed w-full h-screen flex font-sans text-center text-gray-800"
+  >
+    <app-sidebar msg="Hi Vihan!"></app-sidebar>
+    <app-chat></app-chat>
   </div>
 </template>
 
 <script>
-import Sidebar from "./components/Sidebar.vue";
-import Chat from "./components/Chat.vue";
+import AppSidebar from "./components/AppSidebar.vue"
+import AppChat from "./components/AppChat.vue"
 
 export default {
   name: "App",
   components: {
-    Sidebar,
-    Chat,
+    AppSidebar,
+    AppChat,
   },
-};
+}
 </script>

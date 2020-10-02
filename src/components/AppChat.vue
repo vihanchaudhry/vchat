@@ -43,19 +43,19 @@
 
 <script>
 export default {
-  name: "Chat",
+  name: "app-chat",
   data() {
     return {
       newMessage: "",
       messages: [],
-    };
+    }
   },
   methods: {
     sendMessage: function () {
-      const msg = this.newMessage && this.newMessage.trim();
+      const msg = this.newMessage && this.newMessage.trim()
 
       if (!msg) {
-        return;
+        return
       }
 
       this.messages.push({
@@ -63,15 +63,15 @@ export default {
         content: msg,
         user: "Vihan",
         createdAt: new Date(),
-      });
+      })
 
-      this.newMessage = "";
+      this.newMessage = ""
     },
   },
-};
+}
 </script>
 
-<style>
+<style scoped>
 .chat {
   height: calc(100vh - 4rem - 4rem);
 }

@@ -18,18 +18,17 @@
 
 <script>
 export default {
-  name: "Sidebar",
+  name: "app-sidebar",
   props: {
     msg: String,
   },
-};
+}
 </script>
 
-<style>
+<style scoped>
 .sidebar {
   min-width: 16rem;
 }
-
 .side-content {
   height: calc(100vh - 4rem);
 }
