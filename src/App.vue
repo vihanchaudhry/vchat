@@ -1,7 +1,7 @@
 <template>
   <div
     id="app"
-    class="fixed w-full h-screen flex font-sans text-center text-gray-800"
+    class="fixed w-full h-screen flex font-sans text-center text-emerald-green"
   >
     <app-sidebar msg="Hi Vihan!"></app-sidebar>
     <app-chat></app-chat>
