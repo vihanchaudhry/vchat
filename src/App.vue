@@ -33,8 +33,8 @@
     },
     created() {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      firebase.auth().onAuthStateChanged(user => {
-        console.log('auth state changed', user)
+      firebase.auth().onAuthStateChanged((user) => {
+        // console.log('auth state changed', user)
         this.user = user
         this.loading = false
       })

@@ -69,16 +69,24 @@
     created() {
       const db = firebase.firestore()
       this.messagesRef = db.collection('messages')
-      const query = this.messagesRef.orderBy('createdAt', 'desc').limit(25)
+      const query = this.messagesRef.orderBy('createdAt', 'desc').limit(5)
+
+      query.get().then(snapshot => {
+        snapshot.forEach(doc => {
+          console.log(doc.data(), this)
+          this.messages.push(doc.data())
+        })
+        this.messages.reverse()
+      })
 
       this.unsubscribe = query.onSnapshot(
         { includeMetadataChanges: true },
         snapshot => {
           snapshot.docChanges().forEach(change => {
             const message = change.doc.data()
-            if (message.createdAt) {
+            if (change.type === 'modified') {
               this.messages.push(message)
-
+              
               this.$nextTick(() => {
                 this.$refs['chat'].scrollTo({
                   top: this.$refs['chat'].scrollHeight,
