@@ -1,5 +1,5 @@
 {
-  "name": "vchat",
+  "name": "vchannel",
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "firebase": "^7.22.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {

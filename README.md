@@ -1,4 +1,4 @@
-# vchat
+# vchannel
 
 ## Project setup
 ```

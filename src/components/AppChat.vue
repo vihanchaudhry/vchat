@@ -10,13 +10,16 @@
       <div
         v-for="message in messages"
         :key="message.id"
-        class="bg-white rounded w-1/3 mb-3 p-3 shadow"
+        v-bind:class="{
+          'bg-white rounded w-1/3 mb-3 p-3 shadow': true,
+          'bg-emerald-green ml-auto text-white': message.userId === user.uid,
+        }"
       >
-        <p class="text-gray-700">
+        <p>
           {{ message.content }}
         </p>
         <p class="text-sm text-gray-500">
-          Sent by {{ message.user }} on {{ message.createdAt.toUTCString() }}
+          Sent by {{ message.displayName }} on {{ message.createdAt.toUTCString() }}
         </p>
       </div>
     </div>
@@ -42,37 +45,41 @@
 </template>
 
 <script>
-export default {
-  name: "app-chat",
-  data() {
-    return {
-      newMessage: "",
-      messages: [],
-    }
-  },
-  methods: {
-    sendMessage: function () {
-      const msg = this.newMessage && this.newMessage.trim()
-
-      if (!msg) {
-        return
-      }
-
-      this.messages.push({
-        id: this.messages.length,
-        content: msg,
-        user: "Vihan",
-        createdAt: new Date(),
-      })
-
-      this.newMessage = ""
+  export default {
+    name: 'app-chat',
+    props: {
+      user: Object,
     },
-  },
-}
+    data() {
+      return {
+        newMessage: '',
+        messages: [],
+      }
+    },
+    methods: {
+      sendMessage: function () {
+        const msg = this.newMessage && this.newMessage.trim()
+
+        if (!msg) {
+          return
+        }
+
+        this.messages.push({
+          id: this.messages.length,
+          content: msg,
+          userId: this.user.uid,
+          displayName: this.user.displayName,
+          createdAt: new Date(),
+        })
+
+        this.newMessage = ''
+      },
+    },
+  }
 </script>
 
 <style scoped>
-.chat {
-  height: calc(100vh - 4rem - 4rem);
-}
+  .chat {
+    height: calc(100vh - 4rem - 4rem);
+  }
 </style>

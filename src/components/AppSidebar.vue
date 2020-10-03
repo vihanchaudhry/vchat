@@ -17,19 +17,19 @@
 </template>
 
 <script>
-export default {
-  name: "app-sidebar",
-  props: {
-    msg: String,
-  },
-}
+  export default {
+    name: 'app-sidebar',
+    props: {
+      msg: String,
+    },
+  }
 </script>
 
 <style scoped>
-.sidebar {
-  min-width: 16rem;
-}
-.side-content {
-  height: calc(100vh - 4rem);
-}
+  .sidebar {
+    min-width: 16rem;
+  }
+  .side-content {
+    height: calc(100vh - 4rem);
+  }
 </style>
