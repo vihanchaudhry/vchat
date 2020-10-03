@@ -69,7 +69,7 @@
     created() {
       const db = firebase.firestore()
       this.messagesRef = db.collection('messages')
-      const query = this.messagesRef.orderBy('createdAt').limit(25)
+      const query = this.messagesRef.orderBy('createdAt', 'desc').limit(25)
 
       this.unsubscribe = query.onSnapshot(
         { includeMetadataChanges: true },
