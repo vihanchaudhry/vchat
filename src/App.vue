@@ -1,7 +1,7 @@
 <template>
   <div
     id="app"
-    class="w-full h-screen flex font-sans text-center text-emerald-green"
+    class="w-screen h-screen flex font-sans text-center text-emerald-green"
   >
     <app-sidebar msg="V-Channel"></app-sidebar>
     <app-chat v-if="!loading && user" v-bind:user="user"></app-chat>
@@ -32,15 +32,12 @@
       }
     },
     created() {
-      firebase
-        .auth()
-        .getRedirectResult()
-        .then(result => {
-          console.log(result)
-          this.user = result.user
-          this.loading = false
-        })
-        .catch(err => console.error(err))
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      firebase.auth().onAuthStateChanged(user => {
+        console.log('auth state changed', user)
+        this.user = user
+        this.loading = false
+      })
     },
   }
 </script>

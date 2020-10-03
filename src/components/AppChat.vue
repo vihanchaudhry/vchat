@@ -1,27 +1,33 @@
 <template>
-  <div class="justify-between w-full bg-off-white">
+  <div class="chat-container justify-between bg-off-white">
     <div
-      class="z-40 flex items-center bg-emerald-green text-white h-16 px-6 w-full text-center shadow"
+      class="z-40 flex justify-between items-center bg-emerald-green text-white h-16 px-6 w-full text-center shadow"
     >
-      <h1 class="font-semibold">Aadya</h1>
+      <h1 class="">Signed in as {{ user.displayName }}</h1>
+      <button v-on:click="signOut" class="font-semibold">Sign out</button>
     </div>
 
-    <div class="z-0 chat p-6 overflow-x-hidden overflow-y-scroll break-words">
+    <div
+      ref="chat"
+      class="chat flex flex-col z-0 px-6 md:px-20 py-6 overflow-x-hidden overflow-y-scroll break-words"
+    >
       <div
         v-for="message in messages"
         :key="message.id"
         v-bind:class="{
-          'bg-white rounded w-1/3 mb-3 p-3 shadow': true,
-          'bg-emerald-green ml-auto text-white': message.userId === user.uid,
+          'chat-message bg-white rounded mb-3 p-3 shadow': true,
+          'bg-emerald-green ml-auto text-white': message.uid === user.uid,
         }"
       >
         <p>
-          {{ message.content }}
+          {{ message.text }}
         </p>
         <p class="text-sm text-gray-500">
-          Sent by {{ message.displayName }} on {{ message.createdAt.toUTCString() }}
+          Sent by {{ message.name }} on
+          {{ message.createdAt.toDate().toLocaleTimeString() }}
         </p>
       </div>
+      <div ref="bottom"></div>
     </div>
 
     <div class="z-20 h-16 w-full shadow flex">
@@ -45,6 +51,8 @@
 </template>
 
 <script>
+  import firebase from '../firebase'
+
   export default {
     name: 'app-chat',
     props: {
@@ -54,9 +62,45 @@
       return {
         newMessage: '',
         messages: [],
+        messagesRef: null,
+        unsubscribe: Function,
       }
     },
+    created() {
+      const db = firebase.firestore()
+      this.messagesRef = db.collection('messages')
+      const query = this.messagesRef.orderBy('createdAt').limit(25)
+
+      this.unsubscribe = query.onSnapshot(
+        { includeMetadataChanges: true },
+        snapshot => {
+          snapshot.docChanges().forEach(change => {
+            const message = change.doc.data()
+            if (message.createdAt) {
+              this.messages.push(message)
+
+              this.$nextTick(() => {
+                this.$refs['chat'].scrollTo({
+                  top: this.$refs['chat'].scrollHeight,
+                  behaviour: 'smooth',
+                })
+              })
+            }
+          })
+        }
+      )
+    },
     methods: {
+      signOut: function () {
+        this.unsubscribe()
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            console.log('signed out')
+          })
+          .catch(err => console.error(err))
+      },
       sendMessage: function () {
         const msg = this.newMessage && this.newMessage.trim()
 
@@ -64,12 +108,11 @@
           return
         }
 
-        this.messages.push({
-          id: this.messages.length,
-          content: msg,
-          userId: this.user.uid,
-          displayName: this.user.displayName,
-          createdAt: new Date(),
+        this.messagesRef.add({
+          text: msg,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          uid: this.user.uid,
+          name: this.user.displayName,
         })
 
         this.newMessage = ''
@@ -81,5 +124,24 @@
 <style scoped>
   .chat {
     height: calc(100vh - 4rem - 4rem);
+  }
+
+  .chat-container {
+    width: 100%;
+  }
+
+  .chat-message {
+    max-width: 66.67%;
+  }
+
+  @media (min-width: 768px) {
+    .chat-container {
+      width: calc(100vw - 256px);
+    }
+
+    .chat-message {
+      min-width: 33%;
+      max-width: 50%;
+    }
   }
 </style>
