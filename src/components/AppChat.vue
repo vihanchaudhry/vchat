@@ -84,9 +84,12 @@
         snapshot => {
           snapshot.docChanges().forEach(change => {
             const message = change.doc.data()
-            if (change.type === 'modified') {
+            if (
+              change.type === 'modified' ||
+              (change.type === 'added' && message.uid !== this.user.uid)
+            ) {
               this.messages.push(message)
-              
+
               this.$nextTick(() => {
                 this.$refs['chat'].scrollTo({
                   top: this.$refs['chat'].scrollHeight,
