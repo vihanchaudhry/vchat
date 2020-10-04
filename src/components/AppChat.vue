@@ -69,28 +69,31 @@
     created() {
       const db = firebase.firestore()
       this.messagesRef = db.collection('messages')
-      const query = this.messagesRef.orderBy('createdAt', 'desc').limit(5)
 
-      query.get().then(snapshot => {
-        snapshot.forEach(doc => {
-          console.log(doc.data(), this)
-          this.messages.push(doc.data())
-        })
-        this.messages.reverse()
-      })
+      // const initialQuery = this.messagesRef
+      //   .orderBy('createdAt', 'desc')
+      //   .startAfter(1)
+      //   .limit(5)
 
-      this.unsubscribe = query.onSnapshot(
+      // initialQuery.get().then(snapshot => {
+      //   snapshot.forEach(doc => {
+      //     console.log(doc.data())
+      //     this.messages.push(doc.data())
+      //   })
+      //   this.messages.reverse()
+      // })
+
+      const listenerQuery = this.messagesRef.orderBy('createdAt', 'desc').limit(1)
+      this.unsubscribe = listenerQuery.onSnapshot(
         { includeMetadataChanges: true },
         snapshot => {
           snapshot.docChanges().forEach(change => {
             const message = change.doc.data()
-            if (
-              change.type === 'modified' ||
-              (change.type === 'added' && message.uid !== this.user.uid)
-            ) {
+            console.log(message, change.type)
+            if (message.createdAt && change.type !== 'removed') {
               this.messages.push(message)
 
-              this.$nextTick(() => {
+              this.$nextTick(function () {
                 this.$refs['chat'].scrollTo({
                   top: this.$refs['chat'].scrollHeight,
                   behaviour: 'smooth',
@@ -107,9 +110,6 @@
         firebase
           .auth()
           .signOut()
-          .then(() => {
-            console.log('signed out')
-          })
           .catch(err => console.error(err))
       },
       sendMessage: function () {
